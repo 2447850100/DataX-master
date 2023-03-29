@@ -37,7 +37,7 @@ public class HdfsWriter extends Writer {
         private String compress;
         private String encoding;
 
-        public static final Set<String> SUPPORT_FORMAT = new HashSet<>(Arrays.asList("ORC", "PARQUET", "TEXT"));
+        public static final Set<String> SUPPORT_FORMAT = new HashSet<>(Arrays.asList("ORC", "PAR", "TEXT"));
         public static final Set<String> SUPPORTED_WRITE_MODE = new HashSet<>(Arrays.asList("append", "nonConflict", "overwrite"));
         private HashSet<String> tmpFiles = new HashSet<String>();//临时文件全路径
         private HashSet<String> endFiles = new HashSet<String>();//最终文件全路径
@@ -135,7 +135,7 @@ public class HdfsWriter extends Writer {
                                     Arrays.toString(CompressionKind.values()), compress));
                 }
             }
-            if ("PARQUET".equals(fileType)) {
+            if ("PAR".equals(fileType)) {
                 // parquet 默认的非压缩标志是 UNCOMPRESSED ，而不是常见的 NONE，这里统一为 NONE
                 if ("NONE".equals(compress)) {
                     compress = "UNCOMPRESSED";
@@ -464,7 +464,7 @@ public class HdfsWriter extends Writer {
                 //写ORC FILE
                 hdfsHelper.orcFileStartWrite(lineReceiver,this.writerSliceConfig, this.fileName,
                         this.getTaskPluginCollector());
-            }else if (fileType.equalsIgnoreCase("PARQUET")) {
+            }else if (fileType.equalsIgnoreCase("PAR")) {
                 hdfsHelper.parquetFileStartWrite(lineReceiver, writerSliceConfig, fileName, getTaskPluginCollector());
             }
 

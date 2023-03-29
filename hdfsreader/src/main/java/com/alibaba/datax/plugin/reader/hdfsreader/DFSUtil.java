@@ -40,8 +40,7 @@ import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
-import org.apache.parquet.tools.read.SimpleReadSupport;
-import org.apache.parquet.tools.read.SimpleRecord;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
