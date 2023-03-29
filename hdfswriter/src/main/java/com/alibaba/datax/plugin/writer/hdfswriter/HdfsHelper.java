@@ -215,9 +215,9 @@ public  class HdfsHelper {
     public void deleteDir(Path path){
         LOG.info(String.format("start delete tmp dir [%s] .",path.toString()));
         try {
-//            if(isPathexists(path.toString())) {
-//                fileSystem.delete(path, true);
-//            }
+            if(isPathexists(path.toString())) {
+                fileSystem.delete(path, true);
+            }
         } catch (Exception e) {
             String message = String.format("删除临时目录[%s]时发生IO异常,请检查您的网络是否正常！", path.toString());
             LOG.error(message);
