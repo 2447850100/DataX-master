@@ -38,7 +38,7 @@ public class HdfsWriter extends Writer {
         private String encoding;
 
         public static final Set<String> SUPPORT_FORMAT = new HashSet<>(Arrays.asList("ORC", "PAR", "TEXT"));
-        public static final Set<String> SUPPORTED_WRITE_MODE = new HashSet<>(Arrays.asList("append", "nonConflict", "overwrite"));
+        public static final Set<String> SUPPORTED_WRITE_MODE = new HashSet<>(Arrays.asList("append", "nonConflict", "truncate"));
         private HashSet<String> tmpFiles = new HashSet<String>();//临时文件全路径
         private HashSet<String> endFiles = new HashSet<String>();//最终文件全路径
 

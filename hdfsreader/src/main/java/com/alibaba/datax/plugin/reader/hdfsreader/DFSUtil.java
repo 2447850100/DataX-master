@@ -34,6 +34,7 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import org.apache.parquet.VersionParser;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
 import org.apache.parquet.hadoop.ParquetFileReader;
@@ -660,7 +661,7 @@ public class DFSUtil {
             }
 
         } catch (Exception e) {
-            String message = String.format("检查文件[%s]类型失败，目前支持ORC,SEQUENCE,RCFile,TEXT,CSV五种格式的文件," +
+            String message = String.format("检查文件[%s]类型失败，目前支持ORC,SEQUENCE,RCFile,TEXT,CSV,PARQUET 六种格式的文件," +
                     "请检查您文件类型和文件是否正确。", filepath);
             LOG.error(message);
             throw DataXException.asDataXException(HdfsReaderErrorCode.READ_FILE_ERROR, message, e);
@@ -717,12 +718,20 @@ public class DFSUtil {
             GroupReadSupport readSupport = new GroupReadSupport();
             ParquetReader.Builder<Group> reader = ParquetReader.builder(readSupport, file);
             ParquetReader<Group> build = reader.build();
+
             if (build.read() != null) {
                 return true;
             }
-        }
-        catch (IOException e) {
+
+        } catch (IOException e) {
             LOG.info("检查文件类型: [{}] 不是Parquet File.", file);
+        }catch (Exception e) {
+
+            if (!(e instanceof VersionParser.VersionParseException)) {
+                LOG.error("hdfs出现异常，请检查",e);
+                throw e;
+
+            }
         }
         return false;
     }
