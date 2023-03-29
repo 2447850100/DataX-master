@@ -11,19 +11,14 @@ import com.alibaba.datax.plugin.unstructuredstorage.util.HdfsUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import org.apache.avro.Conversions;
+import com.google.common.collect.Sets;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat;
 import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe;
 import org.apache.hadoop.io.ObjectWritable;
-import org.apache.parquet.avro.AvroParquetWriter;
-import org.apache.parquet.column.ParquetProperties;
-import org.apache.parquet.hadoop.ParquetWriter;
-import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -57,6 +52,8 @@ public  class HdfsHelper {
     public org.apache.hadoop.conf.Configuration hadoopConf = null;
     public static final String HADOOP_SECURITY_AUTHENTICATION_KEY = "hadoop.security.authentication";
     public static final String HDFS_DEFAULTFS_KEY = "fs.defaultFS";
+
+    public static final Set<String> parSupportedCompress = Sets.newHashSet("NONE", "UNCOMPRESSED");
 
     // Kerberos
     private Boolean haveKerberos = false;
@@ -372,10 +369,10 @@ public  class HdfsHelper {
         ParquetHiveSerDe parquetHiveSerDe = new ParquetHiveSerDe ();
 
         MapredParquetOutputFormat outFormat = new MapredParquetOutputFormat();
-        if(!"NONE".equalsIgnoreCase(compress) && null != compress ) {
+        if(!parSupportedCompress.contains(compress)) {
             Class<? extends CompressionCodec> codecClass = getCompressCodec(compress);
             if (null != codecClass) {
-                outFormat.setOutputCompressorClass(conf, codecClass);
+                FileOutputFormat.setOutputCompressorClass(conf, codecClass);
             }
         }
         try {
